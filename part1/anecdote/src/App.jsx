@@ -1,24 +1,20 @@
 import { useState } from 'react'
 
-// TODO: ここが怪しい。なぜこう書くのか後で調べる
-const GetMostVotes = ({ anecdotes, votes }) => {
-  let index = -1
-  let mostVotedIndex = -1
-  let maxVote = 0
-  votes.forEach((vote) => {
-    index += 1
-    if (vote > maxVote) {
-      maxVote = vote
-      mostVotedIndex = index
-    }
-  });
-  return (
-    <div>
-      <p>{anecdotes[mostVotedIndex]}</p>
-      <p>has {maxVote} votes</p>
-    </div>
-  )
-}
+const MostVotes = ({ anecdotes, votes }) => {
+    let maxVote = 0
+    let maxVoteIndex = 0
+    votes.forEach(vote => {
+      if (vote > maxVote) {
+        maxVote = vote
+        maxVoteIndex = votes.indexOf(vote)
+      }
+    })
+    return (
+      <div>
+        <p>{anecdotes[maxVoteIndex]}</p>
+      </div>
+    )
+  }
 
 const App = () => {
   const anecdotes = [
@@ -33,13 +29,13 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
-  const getRandInt = () => {
-    setSelected(Math.floor(Math.random() * anecdotes.length))
+  const nextAnecdotes = () => {
+   const nextIndex = Math.floor(Math.random() * anecdotes.length)
+   setSelected(nextIndex)
   }
 
-  // TODO: ここが怪しい。なぜこう書くのか後で調べる
   const vote = () => {
     const copy = [...votes]
     copy[selected] += 1
@@ -52,10 +48,10 @@ const App = () => {
       <p>{anecdotes[selected]}</p>
       <p>has {votes[selected]} votes</p>
       <button onClick={vote}>vote</button>
-      <button onClick={getRandInt}>next anecdote</button>
+      <button onClick={nextAnecdotes}>next anecdotes</button>
 
       <h1>Anecdote with most votes</h1>
-      <GetMostVotes anecdotes={anecdotes} votes={votes} />
+      <MostVotes anecdotes={anecdotes} votes={votes} />
     </div>
   )
 }
